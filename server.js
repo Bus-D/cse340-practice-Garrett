@@ -1,8 +1,16 @@
 //Import express using ESM syntax
 import express from 'express';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const PORT = process.env.PORT || 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //Create an instance of an Exress application
 const app = express();
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const name = process.env.NAME;
 
@@ -14,9 +22,6 @@ app.get('/', (req, res) => {
 app.get('/new-route', (req, res) => {
   res.send('THis is a new route!');
 });
-
-//Define the prt number the server will listen on
-const PORT = 3000;
 
 //Start the server and listen on the specified port
 app.listen(PORT, () => {
