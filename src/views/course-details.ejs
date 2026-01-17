@@ -1,4 +1,5 @@
 <%- include('partials/header') %>
+<link rel="stylesheet" href="/css/catalog.css">
 
 <main>
   <div class="course-header">
@@ -8,7 +9,20 @@
   </div>
 
   <div class="sections">
+    <div class="sections-header">
+      <h2>Available Sections</h2>
+      <div class="sort-options">
+        <span>Sort by: </span>
+        <a href="/catalog/<%= course.id %>" class="<%= currentSort === 'time' ? 'active' : '' %>">Time</a>
+        <a href="/catalog/<%= course.id %>?sort=professor" class="<%= currentSort === 'professor' ? 'active' : '' %>">Professor</a>
+        <a href="/catalog/<%= course.id %>?sort-room" class="<% currentSort === 'room' ? 'active' : '' %>">Room</a>
+      </div>
+    </div>
+
+
     <h2>Available Sections</h2>
+
+
     <div class="section-list">
       <% course.sections.forEach(section => { %>
         <div class="section-card">
