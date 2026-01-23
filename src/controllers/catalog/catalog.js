@@ -5,7 +5,7 @@ const catalogPage = (req, res) => {
 
     res.render('catalog', {
         title: 'Course Catalog',
-        couses: courses
+        courses: courses
     });
 };
 

@@ -11,6 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const NODE_ENV = process.env.NODE_ENV?.toLocaleLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
+console.log('NODE_ENV:', process.env.NODE_ENV);
 
 // ---------- Express Sever Set Up ----------
 const app = express();
@@ -18,7 +19,7 @@ const app = express();
 // ---------- Express Config ----------
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src', 'views'));
+app.set('views', path.join(__dirname, 'src/views'));
 console.log('__dirname:', __dirname);
 
 // ---------- Global Middleware ----------
@@ -49,6 +50,7 @@ app.use((err, req, res, next) => {
   // Prepare data
   const context = {
     title: status === 404 ? 'Page Not Found' : 'Server Error',
+    NODE_ENV,
     error: NODE_ENV === 'production' ? 'An error occured' : err.message,
     stack: NODE_ENV === 'production' ? null : err.stack
   };
