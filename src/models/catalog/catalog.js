@@ -104,17 +104,31 @@ const getSortedSections = (sections, sortBy) => {
     }
 };
 
-const getCoursesByDepartment = () => {
+const getCoursesByDepartment = (sortBy) => {
     const departments = {};
 
-    Object.values(courses).forEach(course => {
-        if (!departments[course.department]) {
-            departments[course.department] = [];
+    Object.values(courses).forEach(courses => {
+        if (!departments[courses.department]) {
+            departments[courses.department] = [];
         }
-        departments[course.department].push(course);
+        departments[courses.department].push(courses);
     });
 
-    return departments;
+    const orderedDepartments = {};
+
+    if (departments[sortBy]) {
+        orderedDepartments[sortBy] = departments[sortBy];
+    }
+
+    Object.keys(departments)
+    .sort()
+    .forEach(dept => {
+        if (dept !== sortBy) {
+            orderedDepartments[dept] = departments[dept];
+        }
+    });
+
+    return orderedDepartments;
 }
 
 

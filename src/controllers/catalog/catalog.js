@@ -1,11 +1,14 @@
-import { getAllCourses, getCourseById, getSortedSections } from '../../models/catalog/catalog.js';
+import { getAllCourses, getCourseById, getSortedSections, getCoursesByDepartment } from '../../models/catalog/catalog.js';
 
 const catalogPage = (req, res) => {
     const courses = getAllCourses();
+    const sortBy = req.query.sort || 'time';
+    const orderedDepartments = getCoursesByDepartment(courses.department, sortBy);
 
     res.render('catalog', {
-        title: 'Course Catalog',
-        courses: courses
+    title: `${courses.id} - ${courses.title}`,
+    course: { ...courses, sections: orderedDepartments },
+    currentSort: sortBy
     });
 };
 
