@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+
+<main>
+    <h1>Faculty List</h2>
+    <p>Browse the list of CSE Faculty</p>
+
+    <div class="sections">
+        <div class="sort-options">
+            <span>Sort By:</span>
+            <a href="/faculty/list?sort=name" class="<%= currentSort === 'name' ? 'active' : '' %>">Name</a>
+            <a href="/faculty/list?sort=office" class="<%= currentSort === 'office' ? 'active' : '' %>">Office</a>
+            <a href="/faculty/list?sort=department" class="<%= currentSort === 'department' ? 'active' : '' %>">Department</a>
+        </div>
+    </div>
+
+    <div class="course-list">
+        <% faculty.forEach(person => { %>
+        <div class="section-card">
+            <div class="section-time"><%= faculty.name %></div>
+            <div class="section-room"><%= faculty.office %></div>
+            <div class="section-professor"><%= faculty.title %></div>
+        </div>
+        <% }) %>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

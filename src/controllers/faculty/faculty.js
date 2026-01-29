@@ -1,17 +1,31 @@
-import { getFacultyById, getSortedfaculty } from '../../models/faculty/faculty.js';
+import { getFacultyById, getSortedFaculty, getAllFaculty } from '../../models/faculty/faculty.js';
 
 const facultyListPage = (req, res) => {
-    const getAllFaculty = getFacultyById();
+    const faculties = getAllFaculty();
     const sortBy = req.query.sort || 'name';
+    const sortedFaculty = getSortedFaculty(sortBy);
 
-    res.render('faculty', {
+
+    res.render('faculty/list', {
         title: 'Faculty List',
-        teacher: { ...faculty, name, office, phone, email, department },
+        faculty: sortedFaculty,
         currentSort: sortBy
     });
 }
 
-const facultyDetailPage = (req, res) => {
-    const faultyId = req.params.facultyId;
+const facultyDetailPage = (req, res, next) => {
+    const facultyId = req.params.facultyId;
+    const faculty = getFacultyById(facultyId);
 
+    if (!faculty) {
+        const err = new Error(`Faculty ${faculty.name} not found`);
+        err.status = 404;
+        return next(err);
+    }
+
+    res.render('faculty/detail', {
+        faculty
+    });
 }
+
+export { facultyListPage, facultyDetailPage };

@@ -73,6 +73,10 @@ const faculty = {
     }
 };
 
+const getAllFaculty = () => {
+    return faculty;
+}
+
 const getFacultyById = (facultyId) => {
     return faculty[facultyId] || null;
 }
@@ -81,13 +85,14 @@ const getSortedFaculty = (sortBy) => {
     // USED CHATGPT TO HELP TUTOR IN UNDERSTANDING HOW TO WRITE THIS FUNCTION
 
     // TODO: validate sortBy parameter
-    const allowedKeys = ['name', 'office', 'phone', 'email', 'department'];
+    const allowedKeys = ['name', 'office', 'phone', 'email', 'department', 'title'];
 
+    // Checks to see if sortBy is in allowedKeys, if not default ot 'name'
     if (!allowedKeys.includes(sortBy)) {
         sortBy = 'name';
     }
 
-    //Create an array of all faculty
+    // Makes an array to hold the faculty, then puts each one inside of the array
     const facultyArray = [];
     Object.values(faculty).forEach(faculty => {
         facultyArray.push(faculty);
@@ -106,4 +111,4 @@ const getSortedFaculty = (sortBy) => {
     return facultyArray;
 }
 
-export { getFacultyById, getSortedFaculty };
+export { getFacultyById, getSortedFaculty, getAllFaculty };
