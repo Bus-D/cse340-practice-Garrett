@@ -10,22 +10,19 @@
             <div class="sort-options">
                 <span>Sort By:</span>
                 <a href="/faculty/list?sort=name" class="<%= currentSort === 'name' ? 'active' : '' %>">Name</a>
-                <a href="/faculty/list?sort=office" class="<%= currentSort === 'office' ? 'active' : '' %>">Office</a>
-                <a href="/faculty/list?sort=department" class="<%= currentSort === 'title' ? 'active' : '' %>">Title</a>
-                <a href="/faculty/list?sort=department" class="<%= currentSort === 'Department' ? 'active' : '' %>">Department</a>
+                <a href="/faculty/list?sort=title" class="<%= currentSort === 'title' ? 'active' : '' %>">Title</a>
+                <a href="/faculty/list?sort=department" class="<%= currentSort === 'department' ? 'active' : '' %>">Department</a>
 
             </div>
         </div>
     </div>
 
     <div class="course-list">
-        <% console.log(faculty); %>
+        <% console.log(faculty) %>
         <% Object.values(faculty).forEach(teacher => { %>
         <div class="course-card">
-            <div class="section-time"><%= teacher.name %></div>
-            <div class="section-room"><%= teacher.office %></div>
-            <div class="section-professor"><%= teacher.title %></div>
-            <div class="section-professor"><%= teacher.department %></div>
+            <h3><a href="/faculty/<%= teacher.id %>"><%= teacher.name %></a></h3>
+            <p class="course-id"><%= teacher.title %> • <%= teacher.department %></p>
         </div>
         <% }) %>
     </div>

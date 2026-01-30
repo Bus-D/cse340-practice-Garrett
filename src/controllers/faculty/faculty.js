@@ -24,7 +24,8 @@ const facultyDetailPage = (req, res, next) => {
     }
 
     res.render('faculty/detail', {
-        faculty
+        faculty,
+        title: `${faculty.name}`
     });
 }
 

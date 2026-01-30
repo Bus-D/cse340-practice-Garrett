@@ -1,5 +1,5 @@
 const faculty = {
-    'brother-jack': {
+    'brother-jack': { 
         name: 'Brother Jack',
         office: 'STC 392',
         phone: '208-496-1234',
@@ -94,9 +94,10 @@ const getSortedFaculty = (sortBy) => {
 
     // Makes an array to hold the faculty, then puts each one inside of the array
     const facultyArray = [];
-    Object.values(faculty).forEach(faculty => {
-        facultyArray.push(faculty);
-    });
+    for (const [key, value] of Object.entries(faculty)) {
+        facultyArray.push({...value , id: key});
+    };
+    console.log(facultyArray);
 
     facultyArray.sort((a, b) => {
         if (a[sortBy] < b[sortBy]) {
@@ -107,6 +108,8 @@ const getSortedFaculty = (sortBy) => {
         }
         return 0; // For if they are equal
     });
+
+    const id = {...faculty, getFacultyById};
 
     return facultyArray;
 }
