@@ -5,20 +5,27 @@
     <p>Browse the list of CSE Faculty</p>
 
     <div class="sections">
-        <div class="sort-options">
-            <span>Sort By:</span>
-            <a href="/faculty/list?sort=name" class="<%= currentSort === 'name' ? 'active' : '' %>">Name</a>
-            <a href="/faculty/list?sort=office" class="<%= currentSort === 'office' ? 'active' : '' %>">Office</a>
-            <a href="/faculty/list?sort=department" class="<%= currentSort === 'department' ? 'active' : '' %>">Department</a>
+        <div class="sections-header">
+            <h2>Available Filters</h2>
+            <div class="sort-options">
+                <span>Sort By:</span>
+                <a href="/faculty/list?sort=name" class="<%= currentSort === 'name' ? 'active' : '' %>">Name</a>
+                <a href="/faculty/list?sort=office" class="<%= currentSort === 'office' ? 'active' : '' %>">Office</a>
+                <a href="/faculty/list?sort=department" class="<%= currentSort === 'title' ? 'active' : '' %>">Title</a>
+                <a href="/faculty/list?sort=department" class="<%= currentSort === 'Department' ? 'active' : '' %>">Department</a>
+
+            </div>
         </div>
     </div>
 
     <div class="course-list">
-        <% faculty.forEach(person => { %>
-        <div class="section-card">
-            <div class="section-time"><%= faculty.name %></div>
-            <div class="section-room"><%= faculty.office %></div>
-            <div class="section-professor"><%= faculty.title %></div>
+        <% console.log(faculty); %>
+        <% Object.values(faculty).forEach(teacher => { %>
+        <div class="course-card">
+            <div class="section-time"><%= teacher.name %></div>
+            <div class="section-room"><%= teacher.office %></div>
+            <div class="section-professor"><%= teacher.title %></div>
+            <div class="section-professor"><%= teacher.department %></div>
         </div>
         <% }) %>
     </div>
