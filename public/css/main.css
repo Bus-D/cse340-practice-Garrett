@@ -1,7 +1,6 @@
 html, body {
-  background-color: lightblue;
+  background-color: #f0f0f0;
   font-family: Arial, sans-serif;
-  margin: 0;
   padding: 20px;
 
   &.blue-theme { background-color: #e3f2fd; }

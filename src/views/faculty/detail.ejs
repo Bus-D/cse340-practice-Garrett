@@ -1,12 +1,27 @@
 <%- include('../partials/header') %>
 
 <main>
-    <div class="course-header">
-        <a href="./list" class="back">< Teacher List</a>
-        <h1><%= faculty.name %></h1>
-        <p class="course-meta"><%= faculty.title %></p>
-
+    <div class="faculty-header">
+        <a href="./list" class="back">〈 Teacher List</a>
     </div>
+
+    <div class="faculty-card">
+        <div class="faculty-card__info">
+            <h2 class="section-time"><%= faculty.name %></h2>
+            <div class="faculty-info">
+                <p class="section-room"><%= faculty.title %> - <%= faculty.department %> | Office: <%= faculty.office %></p>
+                <!-- <p class="section-room">Office: <%=faculty.office %></p> -->
+            </div>
+            
+            <div class="contact">
+                <p>Contact Info:</p>
+                <p class="contact-info">Phone: <%= faculty.phone %></p>
+                <p class="contact-info">Email: <%= faculty.email %></p>
+            </div>
+        </div>
+        
+    </div>
+        
 </main>
 
 <%- include('../partials/footer') %>
