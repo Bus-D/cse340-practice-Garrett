@@ -18,7 +18,7 @@ const facultyDetailPage = (req, res, next) => {
     const faculty = getFacultyById(facultyId);
 
     if (!faculty) {
-        const err = new Error(`Faculty ${faculty.name} not found`);
+        const err = new Error(`Faculty ${facultyId} not found`);
         err.status = 404;
         return next(err);
     }

@@ -18,7 +18,6 @@
     </div>
 
     <div class="course-list">
-        <% console.log(faculty) %>
         <% Object.values(faculty).forEach(teacher => { %>
         <div class="course-card">
             <h3><a href="/faculty/<%= teacher.id %>"><%= teacher.name %></a></h3>

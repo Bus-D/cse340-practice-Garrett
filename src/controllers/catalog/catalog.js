@@ -6,7 +6,7 @@ const catalogPage = (req, res) => {
     const orderedDepartments = getCoursesByDepartment(courses.department, sortBy);
 
     res.render('catalog', {
-    title: `${courses.id} - ${courses.title}`,
+    title: 'Course Catalog',
     course: { ...courses, sections: orderedDepartments },
     currentSort: sortBy
     });
