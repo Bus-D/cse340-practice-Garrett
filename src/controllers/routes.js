@@ -7,6 +7,23 @@ import { facultyListPage, facultyDetailPage } from './faculty/faculty.js';
 // New Router instance
 const router = Router();
 
+router.use('/', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/main.css">');
+    next();
+}) 
+
+router.use('/catalog', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/catalog.css">');
+    next();
+});
+
+router.use('/faculty', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/faculty.css">');
+    next();
+});
+
+
+
 // Home and Basic Pages
 router.get('/', homePage);
 router.get('/about', aboutPage);

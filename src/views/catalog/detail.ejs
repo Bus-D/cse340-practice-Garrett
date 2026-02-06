@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+
+<main>
+  <div class="course-header">
+    <h1><%= course.name %></h1>
+    <p class="course-meta"><%= course.courseCode %> • <%= course.creditHours %> credits </p>
+    <p class="course-description"><% course.description %></p>
+  </div>
+
+  <div class="sections">
+    <div class="sections-header">
+      <h2>Available Sections</h2>
+      <div class="sort-options">
+        <span>Sort by: </span>
+        <a href="/catalog/<%= course.slug %>" class="<%= currentSort === 'time' ? 'active' : '' %>">Time</a>
+        <a href="/catalog/<%= course.slug %>?sort=professor" class="<%= currentSort === 'professor' ? 'active' : '' %>">Professor</a>
+        <a href="/catalog/<%= course.slug %>?sort=room" class="<%= currentSort === 'room' ? 'active' : '' %>">Room</a>
+      </div>
+    </div>
+
+
+    <h2>Available Sections</h2>
+
+
+    <div class="section-list">
+      <% if (sections.length === 0) { %>
+        <p>No sections available</p>
+      <% } else { %>
+        <% Object.values(sections).forEach(course => { %>
+          <div class="section-card">
+            <div class="section-time"><%= course.time %></div>
+            <div class="section-room">Room: <%= course.room %></div>
+            <div class="section-professor">Instructor: <%= course.professor %></div>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="navigation">
+    <p><a href="/catalog">&larr; Back to Course Catalog</a></p>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
