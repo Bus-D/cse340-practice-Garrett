@@ -20,11 +20,11 @@
     <div class="course-list">
         <% Object.values(faculty).forEach(teacher => { %>
         <div class="course-card">
-            <h3><a href="/faculty/<%= teacher.id %>"><%= teacher.name %></a></h3>
+            <h3><a href="/faculty/<%= teacher.slug %>"><%= teacher.name %></a></h3>
             <p class="course-id"><%= teacher.title %> • <%= teacher.department %></p>
         </div>
         <% }) %>
     </div>
 </main>
-
+ 
 <%- include('../partials/footer') %>

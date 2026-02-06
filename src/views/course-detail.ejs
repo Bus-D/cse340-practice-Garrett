@@ -7,16 +7,6 @@
     <p class="course-description"><% course.description %></p>
   </div>
 
-  <% if (Object.keys(queryParams).length > 0) { %>
-    <div class="sort-params">
-      <p>Currently sorted by: <%= queryParams.sort %></p>
-    </div>
-  <% } else { %>
-    <div class="sort-params">
-      <!-- <p>No sorting applied, using default sorting by time</p> -->
-    </div>
-  <% } %>
-
   <div class="sections">
     <div class="sections-header">
       <h2>Available Sections</h2>

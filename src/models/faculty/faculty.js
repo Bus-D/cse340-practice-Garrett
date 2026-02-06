@@ -127,7 +127,7 @@ const getFacultyByDepartment = async (departmentId, sortBy = 'name') => {
         slug: faculty.slug
     }));
 };
-
+ 
 /**
  * Wrapper functions for cleaner API - these make the code more readable at the call site.
  * Example: getFacultyById(5) is clearer than getFaculty(5, 'id')
