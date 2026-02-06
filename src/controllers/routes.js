@@ -13,7 +13,7 @@ router.get('/about', aboutPage);
 
 // Course Catalog
 router.get('/catalog', catalogPage);
-router.get('/catalog/:slugId', courseDetailPage);
+router.get('/catalog/:courseSlug', courseDetailPage);
 
 // Faculty Page
 router.get('/faculty/list', facultyListPage);
