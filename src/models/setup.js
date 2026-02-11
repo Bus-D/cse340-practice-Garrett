@@ -39,18 +39,22 @@ const setupDatabase = async () => {
     const seedPath = join(__dirname, 'sql', 'seed.sql');
     const seedSQL = fs.readFileSync(seedPath, 'utf8');
     await db.query(seedSQL);
+    const practicePath = join(__dirname, 'sql', 'practice.sql');
+    if (fs.existsSync(practicePath)) {
+        const practiceSQL = fs.readFileSync(practicePath, 'utf8');
+        await db.query(practiceSQL);
+        console.log('Practice database tables initialized');
+    }
     console.log('Database seeded successfully');
-    
     return true;
 };
-
 /**
  * Tests the database connection by executing a simple query.
  */
 const testConnection = async () => {
     const result = await db.query('SELECT NOW() as current_time');
     console.log('Database connection successful:', result.rows[0].current_time);
-    return true;
+    return true; 
 };
 
 export { setupDatabase, testConnection };

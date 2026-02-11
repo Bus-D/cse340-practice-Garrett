@@ -5,8 +5,6 @@ const facultyListPage = async (req, res) => {
     const sortBy = validSortOptions.includes(req.query.sort) ? req.query.sort : 'department';
     const sortedFaculty = await getSortedFaculty(sortBy);
 
-    console.log('Faculty:', sortedFaculty);
-
     res.render('faculty/list', {
         title: 'Faculty Directory',
         faculty: sortedFaculty,
