@@ -13,6 +13,8 @@ const __dirname = path.dirname(__filename);
 const NODE_ENV = process.env.NODE_ENV?.toLocaleLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 console.log('NODE_ENV:', process.env.NODE_ENV);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // ---------- Express Sever Set Up ----------
 const app = express();
