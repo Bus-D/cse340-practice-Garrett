@@ -7,6 +7,9 @@ import { setupDatabase, testConnection } from './src/models/setup.js';
 import routes from './src/controllers/routes.js';
 import { addLocalVariables } from './src/middleware/global.js';
 
+// ---------- Express Sever Set Up ----------
+const app = express();
+
 // ---------- Server Config ----------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,8 +19,7 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// ---------- Express Sever Set Up ----------
-const app = express();
+
 
 // ---------- Express Config ----------
 app.use(express.static(path.join(__dirname, 'public')));

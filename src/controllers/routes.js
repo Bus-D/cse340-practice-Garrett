@@ -3,6 +3,7 @@ import { addDemoHeaders } from '../middleware/demo/headers.js';
 import { catalogPage, courseDetailPage } from './catalog/catalog.js';
 import { homePage, aboutPage, demoPage, testErrorPage } from './index.js';
 import { facultyListPage, facultyDetailPage } from './faculty/faculty.js';
+import { showContactForm, handleContactSubmission, showContactResponses } from'./forms/contact.js'
 
 // New Router instance
 const router = Router();
@@ -22,6 +23,11 @@ router.use('/faculty', (req, res, next) => {
     next();
 });
 
+router.use('/contact', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/contact.css">');
+    next();
+})
+
 
 
 // Home and Basic Pages
@@ -38,6 +44,9 @@ router.get('/faculty/:facultySlug', facultyDetailPage);
 
 // Demo page
 router.get('/demo', addDemoHeaders, demoPage);
+
+// Contact Form Routes
+router.use('/contact', showContactForm, handleContactSubmission, showContactResponses);
 
 // Test Error
 router.get('/test-error', testErrorPage);
