@@ -86,4 +86,5 @@ router.post('/',
 */
 router.get('/responses', showContactResponses);
 
-export { showContactForm, handleContactSubmission, showContactResponses};
+// export { showContactForm, handleContactSubmission, showContactResponses};
+export default router;
