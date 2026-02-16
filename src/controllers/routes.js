@@ -3,8 +3,8 @@ import { addDemoHeaders } from '../middleware/demo/headers.js';
 import { catalogPage, courseDetailPage } from './catalog/catalog.js';
 import { homePage, aboutPage, demoPage, testErrorPage } from './index.js';
 import { facultyListPage, facultyDetailPage } from './faculty/faculty.js';
-// import { showContactForm, handleContactSubmission, showContactResponses } from'./forms/contact.js'
 import contactRouter from './forms/contact.js'
+import registrationRoutes from './forms/registration.js';
 
 // New Router instance
 const router = Router();
@@ -27,7 +27,12 @@ router.use('/faculty', (req, res, next) => {
 router.use('/contact', (req, res, next) => {
     res.addStyle('<link rel="stylesheet" href="/css/contact.css">');
     next();
-})
+});
+
+router.use('/register', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/registration.css">');
+    next();
+});
 
 
 
@@ -47,8 +52,10 @@ router.get('/faculty/:facultySlug', facultyDetailPage);
 router.get('/demo', addDemoHeaders, demoPage);
 
 // Contact Form Routes
-// router.use('/contact', showContactForm, handleContactSubmission, showContactResponses);
 router.use('/contact', contactRouter);
+
+// Registration routes
+router.use('/register', registrationRoutes);
 
 // Test Error
 router.get('/test-error', testErrorPage);
