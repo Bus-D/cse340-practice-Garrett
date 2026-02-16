@@ -40,7 +40,7 @@ const registrationValidation = [
  * Display the registration form page.
  */
 const showRegistrationForm = (req, res) => {
-    res.render('forms/registration/form', {
+    res.render('forms/register/form', {
         title: 'Register'
     });
 };
@@ -71,7 +71,7 @@ const processRegistration = async (req, res) => {
 
         if (emailIsIn) {
             // TODO: Log message: 'Email already registered'
-            console.log(`${email} already exists. Pleast use a different email or sign in`);
+            console.log(`${email} already exists. Please use a different email or sign in`);
             // TODO: Redirect back to /register
             res.redirect('/register');
             return;
@@ -90,7 +90,7 @@ const processRegistration = async (req, res) => {
         // TODO: Redirect to /register/list to show successful registration
         // NOTE: Later when we add authentication, we'll change this to require login first
         console.log('Registration Successful');
-        res.redirect('/register/ist');
+        res.redirect('forms/register/ist');
     } catch (error) {
         // TODO: Log the error to console
         // TODO: Redirect back to /register
@@ -118,7 +118,7 @@ const showAllUsers = async (req, res) => {
 
     // TODO: Render the users list view (forms/registration/list)
     // TODO: Pass title: 'Registered Users' and the users variable in the data object
-    res.render('forms/registration/list', {
+    res.render('forms/register/list', {
         title: 'Registered Users',
         users
     })
@@ -126,7 +126,7 @@ const showAllUsers = async (req, res) => {
 
 router.get('/', showRegistrationForm);
 
-router.post('/register', registrationValidation, processRegistration);
+router.post('/', registrationValidation, processRegistration);
 
 router.get('/list', showAllUsers);
 

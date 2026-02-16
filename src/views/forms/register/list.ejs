@@ -2,10 +2,10 @@
 <main>
     <h1><%= title %></h1>
 
-    <% if (users && users.list > 0) => { %>
+    <% if (users && users.length > 0) { %>
 
         <div class="users-list">
-            <% users.formEach(user => { %>
+            <% users.forEach(user => { %>
 
                 <div class="user-card">
                     <div class="user-header">
@@ -16,11 +16,11 @@
                     <div class="user-details">
                         <div class="detail-item">
                             <div class="label">Email</div>
-                            <div class="value"><%= user.email</div>
+                            <div class="value"><%= user.email %></div>
                         </div>
 
-                        <div class="detail-item">Registered</div>
-                            <div class="value">Created At: <% new Date(user.created_at).toLocaleDateString()</div>
+                        <div class="detail-item">Registered
+                            <div class="value">Created At: <%= new Date(user.created_at).toLocaleDateString() %></div>
                         </div>
                     </div>
                 </div>
