@@ -26,6 +26,12 @@ const addLocalVariables = (req, res, next) => {
     // Set greeting
     res.locals.greeting = `<p>${getCurrentGreeting()}</p>`
 
+    // Set logged in state
+    res.locals.isLoggedIn = false;
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+    }
+
     // Randomly assign theme
     const themes = ['blue-theme', 'green-theme', 'red-theme'];
     const randomTheme = themes[Math.floor(Math.random() * themes.length)];

@@ -2,13 +2,14 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { setupDatabase, testConnection } from './src/models/setup.js';
+import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import { caCert } from './src/models/db.js';
+import {startSessionCleanup } from './src/utils/session-cleanup.js';
 
 // ---------- MVC Components ----------
 import routes from './src/controllers/routes.js';
 import { addLocalVariables } from './src/middleware/global.js';
-
-// ---------- Express Sever Set Up ----------
-const app = express();
 
 // ---------- Server Config ----------
 const __filename = fileURLToPath(import.meta.url);
@@ -16,16 +17,46 @@ const __dirname = path.dirname(__filename);
 const NODE_ENV = process.env.NODE_ENV?.toLocaleLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 console.log('NODE_ENV:', process.env.NODE_ENV);
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
+// ---------- Express Sever Set Up ----------
+const app = express();
 
+// Initialize PostgreSQL session store
+const pgSession = connectPgSimple(session);
+
+// ---------- Configure Session ----------
+app.use(session({
+  store: new pgSession({
+    conObject: {
+      connectionString: process.env.DB_URL,
+      // Config ssl
+      ssl : {
+        ca: caCert,
+        rejectUnauthorized: true,
+        checkServerIdentity: () => { return undefined; }
+      }
+    },
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  cookie: {
+    secure: NODE_ENV.includes('dev') !== true,
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 100
+  }
+}));
+
+// Start auto cleanup
+startSessionCleanup();
 
 // ---------- Express Config ----------
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
-console.log('__dirname:', __dirname);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // ---------- Global Middleware ----------
 app.use(addLocalVariables);
