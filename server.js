@@ -44,7 +44,7 @@ app.use(session({
   cookie: {
     secure: NODE_ENV.includes('dev') !== true,
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 100
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
@@ -54,6 +54,7 @@ startSessionCleanup();
 // ---------- Express Config ----------
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
+app.set('trust proxy', 1);
 app.set('views', path.join(__dirname, 'src/views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

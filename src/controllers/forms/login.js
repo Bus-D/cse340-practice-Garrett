@@ -31,6 +31,7 @@ const showLoginForm = (req, res) => {
  * Process Login
  */
 const processLogin = async (req, res) => {
+    console.log('Login Attempt:', req.body);
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
