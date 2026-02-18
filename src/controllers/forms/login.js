@@ -44,13 +44,14 @@ const processLogin = async (req, res) => {
 
     try {
         const foundUser = await findUserByEmail(email);
-        const verifiedPassword = await verifyPassword(password, foundUser.password);
 
         if (!foundUser) {
             console.log(`This account does not exist. Please try again`);
             res.redirect('/login');
             return;
         }
+
+        const verifiedPassword = await verifyPassword(password, foundUser.password);
 
         if (!verifiedPassword) {
             console.log('Invalid password. Please try again');
@@ -116,7 +117,7 @@ const showDashboard = (req, res) => {
         console.error('Security Error: password found in sessionData.user')
     }
 
-    res.render('/dashboard', {
+    res.render('dashboard', {
         title: 'Dashboard',
         sessionData,
         user

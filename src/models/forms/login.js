@@ -15,8 +15,8 @@ const findUserByEmail = async (email) => {
     LIMIT 1
     `;
 
-    const result = await db.query(query.toLowerCase(), [email]);
-    return result.rows[0].exists || null;
+    const result = await db.query(query, [email]);
+    return result.rows[0]|| null;
 };
 
 /**
