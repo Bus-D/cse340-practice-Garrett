@@ -6,6 +6,7 @@ import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import { caCert } from './src/models/db.js';
 import {startSessionCleanup } from './src/utils/session-cleanup.js';
+import flash from './src/middleware/flash.js';
 
 // ---------- MVC Components ----------
 import routes from './src/controllers/routes.js';
@@ -61,6 +62,9 @@ app.use(express.json());
 
 // ---------- Global Middleware ----------
 app.use(addLocalVariables);
+
+// ---------- Flash Messages ----------
+app.use(flash);
 
 // ---------- Routes ----------
 app.use('/', routes);
