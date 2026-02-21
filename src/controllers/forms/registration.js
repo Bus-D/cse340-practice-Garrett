@@ -12,13 +12,18 @@ const router = Router();
 const registrationValidation = [
     body('name')
         .trim()
-        .isLength({ min:2 })
-        .withMessage('Name must be at least 2 characters'),
+        .isLength({ min:2, max: 100 })
+        .withMessage('Name must be between 2 and 100 characters')
+        .matches(/^[a-zA-Z\s'-]+$/)
+        .withMessage('Name can only contain letters, spaces, hyphens, and apostrophes'),
+        
     body('email')
         .trim()
         .isEmail()
         .normalizeEmail()
-        .withMessage('Must be a valid email address'),
+        .withMessage('Must be a valid email address')
+        .isLength({ max: 255 })
+        .withMessage('Email is too long'),
     body('emailConfirm')
         .trim()
         .custom((value, {req}) => value === req.body.email)
