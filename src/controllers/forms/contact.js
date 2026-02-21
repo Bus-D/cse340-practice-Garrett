@@ -38,9 +38,8 @@ const handleContactSubmission = async (req, res) => {
         req.flash('success', 'Thank you for contacting us! We will respond soon.');
         res.redirect('/contact');
     } catch (error) {
-        errors.array().forEach(error => {
-            req.flash('error', error.msg);
-        });
+        console.error('Error saving contact form:', error);
+        req.flash ('error', 'Unable to submit your error. Please try again later.');
         res.redirect('/contact');
     }
 };

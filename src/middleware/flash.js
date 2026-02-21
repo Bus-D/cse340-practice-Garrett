@@ -98,7 +98,7 @@ const flashMiddleware = (req, res, next) => {
     next();
 }
 
-const flashLocals = (res, req, next) => {
+const flashLocals = (req, res, next) => {
     res.locals.flash = req.flash;
     next();
 };
@@ -107,7 +107,7 @@ const flashLocals = (res, req, next) => {
  * Combine both functions into single function
  * that calls in correct order
  */
-const flash = (res, req, next) => {
+const flash = (req, res, next) => {
     flashMiddleware(req, res, () => {
         flashLocals(req, res, next);
     });
