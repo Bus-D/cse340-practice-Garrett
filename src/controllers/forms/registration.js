@@ -1,7 +1,15 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
-import { emailExists, saveUser, getAllUsers } from '../../models/forms/registations.js';
+import { 
+    emailExists, 
+    saveUser, 
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser
+} from '../../models/forms/registration.js';
+import { requireLogin } from '../../middleware/auth.js';
 
 const router = Router();
 
@@ -44,6 +52,22 @@ const registrationValidation = [
         .withMessage('Passwords must match')
 ];
 
+const editValidation = [
+    body('name')
+        .trim()
+        .isLength({ min: 2, max: 100})
+        .withMessage('Name must be between 2 and 100 characters')
+        .matches(/^[a-zA-Z\s'-]+$/)
+        .withMessage('Name can only contain letters, spaces, hyphens, and apostrophes'),
+    body('email')  
+        .trim()
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Must be a valid email address')
+        .isLength({ max: 255} )
+        .withMessage('Email is too long')
+]
+
 
 
 /**
@@ -55,6 +79,90 @@ const showRegistrationForm = (req, res) => {
     });
 };
 
+
+/**
+ * Display the edit account form
+ * Users can edit their own account, admins can edit any account
+ */
+const showEditAccountForm = (req, res) => {
+    const targetUserId = parseInt(req.params.id);
+    const currentUser = req.session.user;
+
+    const targetUser = getUserById(targetUserId);
+
+    if (!targetUser) {
+        req.flash('error', 'User not found')
+        return res.redirect('/register/list');
+    }
+
+    // Check permissions: users can edit themselves, admins can edit anyone
+    const canEdit = currentUser.id === targetUserId || currentUser.roleName === 'admin';
+
+    if (!canEdit) {
+        req.flash('error', 'You do not have permission to edit this account');
+        return res.redirect('/register/login');
+    }
+
+    res.render('/forms/registration/edit', {
+        title: 'Edit Account',
+        user: targetUser
+    });
+};
+
+/**
+ * Process acount edit submission
+ */
+const processEditAccount = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        errors.array().forEach(error => {
+            req.flash('error', error.msg);
+        });
+    }
+
+    const targetUserId = parseInt(req.params.id);
+    const currentUser = req.session.user;
+    const {name, email} = req.body;
+
+    try {
+        const targetUser = await getUserById(targetUserId);
+
+        if (!targetUser) {
+            req.flash('error', 'User not found');
+            return res.redirect('/register/list');
+        }
+
+        // Check permissions
+        const canEdit = currentUser.id === targetUserId || currentUser.roleNmae === 'admin';
+
+        if (!canEdit) {
+            req.flash('error', 'You do not have permission to edit this account');
+            return res.redirect('/register/login');
+        }
+
+        // Check if new email already exists
+        const emailTaken = await emailExists(email);
+        if (emailTaken && targetUser.email !== email) {
+            req.flash('error', 'An account with this email already exists');
+            return res.redirect(`/register/${targetUserId}/edit`);
+        }
+
+        await updateUser(targetUserId, name, email);
+
+        if (currentUser.id === targetUserId) {
+            req.session.user.name = name;
+            req.session.user.email = email;
+        }
+
+        req.flash('success', 'Account updated successfully');
+        res.reditect('/register/list');
+    } catch (error) {
+        console.error('Error updating account:', error);
+        req.flash('error', 'An error occurred while updating the account');
+        res.redirect(`/register/${targetUserId}/edit`);
+    }
+};
 
 /**
  * Handle user registration with validation and password hashing.
@@ -139,5 +247,9 @@ router.get('/', showRegistrationForm);
 router.post('/', registrationValidation, processRegistration);
 
 router.get('/list', showAllUsers);
+
+router.get('/:id/edit', requireLogin, showEditAccountForm);
+
+router.post('/:id/edit', requireLogin, editValidation, processEditAccount);
 
 export default router;
