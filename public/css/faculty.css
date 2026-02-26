@@ -177,6 +177,15 @@
     border-radius: 12px;
     padding: 32px;
 
+    .faculty-photo {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 7px;
+      background: url('https://placehold.co/480') center / cover no-repeat;
+    }
+
     .faculty-card__info {
         width: fit-content;
     }

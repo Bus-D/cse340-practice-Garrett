@@ -1,5 +1,4 @@
 import { body } from 'express-validator';
-
 /**
  * Validation rules for user registration and profile edit
  */

@@ -10,7 +10,7 @@ import {
     deleteUser
 } from '../../models/forms/registration.js';
 import { requireLogin } from '../../middleware/auth.js';
-import { registrationValidation, editValidation} from '../../middleware/validation/forms.js';
+import { registrationValidation, editValidation, loginValidation, contactValidation } from '../../middleware/validation/forms.js';
 
 const router = Router();
 
@@ -116,47 +116,34 @@ const processRegistration = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        // TODO: Log validation errors to console for debugging
         console.error('Registration Errors:', errors.array());
-        // TODO: Redirect back to /register
+        errors.array().forEach(error => {
+            req.flash('error', error.msg);
+        });
         return res.redirect('/register');
     }
 
-    // Extract validated data from request body
-    // TODO: Destructure name, email, password from req.body
     const {name, email, password } = req.body;
 
     try {
-        // Check if email already exists in database
-        // TODO: Call emailExists(email) and store the result in a variable
         const emailIsIn = await emailExists(email);
 
         if (emailIsIn) {
-            // TODO: Log message: 'Email already registered'
-            console.log(`${email} already exists. Please use a different email or sign in`);
-            // TODO: Redirect back to /register
+            req.flash('error', `${email} already exists. Please use a different email or sign in`);
+
             res.redirect('/register');
             return;
         }
 
-        // Hash the password before saving to database
-        // TODO: Use bcrypt.hash(password, 10) to hash the password
-        // TODO: Store the result in a variable called hashedPassword
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Save user to database with hashed password
-        // TODO: Call saveUser(name, email, hashedPassword)
         await saveUser(name, email, hashedPassword);
 
-        // TODO: Log success message to console
-        // TODO: Redirect to /register/list to show successful registration
-        // NOTE: Later when we add authentication, we'll change this to require login first
-        console.log('Registration Successful');
+        req.flash('success', 'Registration Successful');
         res.redirect('/register/list');
     } catch (error) {
-        // TODO: Log the error to console
-        // TODO: Redirect back to /register
         console.error('Error saving user:', error);
+        req.flash('error', 'Error creating user, please try again');
         res.redirect('/register');
     }
 };
@@ -216,13 +203,13 @@ const showAllUsers = async (req, res) => {
 
 router.get('/', showRegistrationForm);
 
-router.post('/', registrationValidation, processRegistration);
+router.post('/', processRegistration);
 
 router.get('/list', showAllUsers);
 
 router.get('/:id/edit', requireLogin, showEditAccountForm);
 
-router.post('/:id/edit', requireLogin, editValidation, processEditAccount);
+router.post('/:id/edit', requireLogin, processEditAccount);
 
 router.post('/:id/delete', requireLogin, processDeleteAccount);
 

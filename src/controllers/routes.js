@@ -8,7 +8,6 @@ import registrationRoutes from './forms/registration.js';
 import loginRoutes from './forms/login.js';
 import { processLogout, showDashboard } from './forms/login.js';
 import { requireLogin } from '../middleware/auth.js';
-import { registrationValidation, editValidation, contactValidation, loginValidation } from '../middleware/validation/forms.js';
 
 // New Router instance
 const router = Router();
@@ -61,13 +60,13 @@ router.get('/faculty/:facultySlug', facultyDetailPage);
 router.get('/demo', addDemoHeaders, demoPage);
 
 // Contact Form Routes
-router.use('/contact', contactRouter, contactValidation);
+router.use('/contact', contactRouter);
 
 // Registration routes
-router.use('/register', registrationRoutes, registrationValidation, editValidation);
+router.use('/register', registrationRoutes);
 
 // Login routes (form and submission)
-router.use('/login', loginRoutes, loginValidation);
+router.use('/login', loginRoutes);
 
 // Authentication-related routes at root level
 router.get('/logout', processLogout);
