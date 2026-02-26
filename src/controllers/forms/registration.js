@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import { 
     emailExists, 
@@ -10,65 +10,9 @@ import {
     deleteUser
 } from '../../models/forms/registration.js';
 import { requireLogin } from '../../middleware/auth.js';
+import { registrationValidation, editValidation} from '../../middleware/validation/forms.js';
 
 const router = Router();
-
-/**
- * Validation rules for user registration
- */
-
-const registrationValidation = [
-    body('name')
-        .trim()
-        .isLength({ min:2, max: 100 })
-        .withMessage('Name must be between 2 and 100 characters')
-        .matches(/^[a-zA-Z\s'-]+$/)
-        .withMessage('Name can only contain letters, spaces, hyphens, and apostrophes'),
-        
-    body('email')
-        .trim()
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Must be a valid email address')
-        .isLength({ max: 255 })
-        .withMessage('Email is too long'),
-    body('emailConfirm')
-        .trim()
-        .custom((value, {req}) => value === req.body.email)
-        .withMessage('Email addresses must match'),
-    body('password')
-        .isLength({ min: 8, max: 128})
-        .withMessage('Password must be between 8 and 128 characters')
-        .matches(/[0-9]/)
-        .withMessage('Must contain at least 1 number')
-        .matches(/[a-z]/)
-        .withMessage('Password must contain at least 1 lowercase character')
-        .matches(/[A-Z]/)
-        .withMessage('Password must contain at least 1 upper case character')
-        .matches(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)
-        .withMessage('Must contain at least 1 special character'),
-    body('passwordConfirm')
-        .custom((value, {req}) => value === req.body.password)
-        .withMessage('Passwords must match')
-];
-
-const editValidation = [
-    body('name')
-        .trim()
-        .isLength({ min: 2, max: 100})
-        .withMessage('Name must be between 2 and 100 characters')
-        .matches(/^[a-zA-Z\s'-]+$/)
-        .withMessage('Name can only contain letters, spaces, hyphens, and apostrophes'),
-    body('email')  
-        .trim()
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Must be a valid email address')
-        .isLength({ max: 255} )
-        .withMessage('Email is too long')
-]
-
-
 
 /**
  * Display the registration form page.
@@ -84,11 +28,11 @@ const showRegistrationForm = (req, res) => {
  * Display the edit account form
  * Users can edit their own account, admins can edit any account
  */
-const showEditAccountForm = (req, res) => {
+const showEditAccountForm = async (req, res) => {
     const targetUserId = parseInt(req.params.id);
     const currentUser = req.session.user;
 
-    const targetUser = getUserById(targetUserId);
+    const targetUser = await getUserById(targetUserId);
 
     if (!targetUser) {
         req.flash('error', 'User not found')
@@ -103,7 +47,7 @@ const showEditAccountForm = (req, res) => {
         return res.redirect('/register/login');
     }
 
-    res.render('/forms/registration/edit', {
+    res.render('forms/register/edit', {
         title: 'Edit Account',
         user: targetUser
     });
@@ -134,7 +78,7 @@ const processEditAccount = async (req, res) => {
         }
 
         // Check permissions
-        const canEdit = currentUser.id === targetUserId || currentUser.roleNmae === 'admin';
+        const canEdit = currentUser.id === targetUserId || currentUser.roleName === 'admin';
 
         if (!canEdit) {
             req.flash('error', 'You do not have permission to edit this account');
@@ -156,7 +100,7 @@ const processEditAccount = async (req, res) => {
         }
 
         req.flash('success', 'Account updated successfully');
-        res.reditect('/register/list');
+        res.redirect('/register/list');
     } catch (error) {
         console.error('Error updating account:', error);
         req.flash('error', 'An error occurred while updating the account');
@@ -208,7 +152,7 @@ const processRegistration = async (req, res) => {
         // TODO: Redirect to /register/list to show successful registration
         // NOTE: Later when we add authentication, we'll change this to require login first
         console.log('Registration Successful');
-        res.redirect('forms/register/ist');
+        res.redirect('/register/list');
     } catch (error) {
         // TODO: Log the error to console
         // TODO: Redirect back to /register
@@ -216,6 +160,38 @@ const processRegistration = async (req, res) => {
         res.redirect('/register');
     }
 };
+/**
+ * Process Account Deletion
+ */
+const processDeleteAccount = async (req, res) => {
+    const targetUserId = parseInt(req.params.id);
+    const currentUser = req.session.user;
+
+    if (currentUser.roleName !== 'admin') {
+        req.flash('error', 'You do not have permission to delete accounts.');
+        return res.redirect('/register/list');
+    }
+
+    if (currentUser.id === targetUserId && currentUser.roleName === 'admin') {
+        req.flash('error', 'You cannot delete your own account');
+        return res.redirect('/register/list');
+    }
+
+    try {
+        const deleted = await deleteUser(targetUserId);
+
+        if (deleted) {
+            req.flash('success', 'Account successfully deleted');
+        } else {
+            req.flash('error', 'User not found or user already deleted');
+        }
+    } catch(error) {
+        console.error('Error deleting User:', error);
+        req.flash('error', 'An error occured while deleting the account');
+    }
+
+    res.redirect('/register/list');
+}
 
 /**
  * Display all registered users.
@@ -225,20 +201,16 @@ const showAllUsers = async (req, res) => {
     let users = [];
 
     try {
-        // TODO: Call getAllUsers() and assign to users variable
         users = await getAllUsers();
 
     } catch (error) {
-        // TODO: Log the error to console
-        // users remains empty array on error
         console.error('Error retrieving user list:', error);
     }
 
-    // TODO: Render the users list view (forms/registration/list)
-    // TODO: Pass title: 'Registered Users' and the users variable in the data object
     res.render('forms/register/list', {
         title: 'Registered Users',
-        users
+        users,
+        user: req.session && req.session.user ? req.session.user : null
     })
 };
 
@@ -251,5 +223,7 @@ router.get('/list', showAllUsers);
 router.get('/:id/edit', requireLogin, showEditAccountForm);
 
 router.post('/:id/edit', requireLogin, editValidation, processEditAccount);
+
+router.post('/:id/delete', requireLogin, processDeleteAccount);
 
 export default router;

@@ -30,7 +30,7 @@ const saveUser = async (name, email, hashedPassword) => {
     VALUES (
         $1,
         $2, 
-        $3
+        $3,
         (SELECT id FROM roles WHERE role_name = 'user'))
     RETURNING id, name, email, created_at
     `;
@@ -49,11 +49,11 @@ const getUserById = async (id) => {
             users.name,
             users.email,
             users.created_at,
-            users.role_name AS "roleName"
+            roles.role_name AS "roleName"
         FROM users
         INNER JOIN roles ON users.role_id = roles.id
         WHERE users.id = $1
-        `;
+    `;
         const result = await db.query(query, [id]);
         return result.rows[0] || null;
 }
@@ -63,8 +63,8 @@ const updateUser = async (id, name, email) => {
         UPDATE users
         SET
             name = $1,
-            email = $2
-            updated_at = CURRENT TIMESTAMP
+            email = $2,
+            updated_at = CURRENT_TIMESTAMP
         WHERE id = $3
         RETURNING id, name, email, updated_at
     `;

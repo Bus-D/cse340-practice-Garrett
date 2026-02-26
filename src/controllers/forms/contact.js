@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { body, validationResult} from 'express-validator';
+import { validationResult} from 'express-validator';
 import { createContactForm, getAllContactForms } from '../../models/forms/contact.js';
+import { contactValidation } from '../../middleware/validation/forms.js';
 
 const router = Router();
 
@@ -10,6 +11,8 @@ const showContactForm = (req, res) => {
         title: 'Contact Us'
     });
 };
+
+
 
 /*
     Handle Contact Form Submission with Validation
@@ -71,26 +74,7 @@ router.get('/', showContactForm);
     POST /contact - Handle contact form submission with validation
 */
 router.post('/',
-    [
-        body('subject')
-            .trim()
-            .isLength({ min: 2, max: 255})
-            .withMessage('Subject must be between 2 and 255 characters')
-            .matches(/^[a-zA-Z0-9\s\-.,!?]+$/)
-            .withMessage('Subjext contains invalid characters'),
-        body('message') 
-            .trim()
-            .isLength({ min: 10, max: 2000})
-            .withMessage('Message must be between 10 and 2000 characters')
-            .custom((value) => {
-                const words = value.split(/\s+/);
-                const uniqueWords = new Set(words);
-
-                if (words.length > 20 && uniqueWords.size / words.length < 0.3) {
-                    throw new Error('Message appears to be spam');
-                }
-            })
-    ],
+    contactValidation,
     handleContactSubmission
 );
 
@@ -99,5 +83,4 @@ router.post('/',
 */
 router.get('/responses', showContactResponses);
 
-// export { showContactForm, handleContactSubmission, showContactResponses};
 export default router;

@@ -1,27 +1,9 @@
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { findUserByEmail, verifyPassword } from '../../models/forms/login.js';
 import { Router } from 'express';
+import { loginValidation } from '../../middleware/validation/forms.js';
 
 const router = Router();
-
-/**
- * validation Rules for Login
- */
-const loginValidation = [
-    body('email')
-        .trim()
-        .isEmail()
-        .withMessage('Please provide a valid email address')
-        .normalizeEmail()
-        .isLength({ max: 255})
-        .withMessage('Email is too long'),
-    body('password')
-        .notEmpty()
-        .withMessage('Password Required')
-        .isLength({ min: 8, max: 255 })
-        .withMessage('Password must be between 8 and 255 characters')
-        
-];
 
 /**
  * Display Login Form
